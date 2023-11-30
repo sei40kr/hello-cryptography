@@ -1,6 +1,4 @@
-const BLOCK_SIZE: usize = 64;
-
-const BLOCK_BYTES: usize = BLOCK_SIZE / 8;
+use crate::block::BLOCK_BYTES;
 
 fn xor(left: &[u8; BLOCK_BYTES / 2], right: &[u8; BLOCK_BYTES / 2]) -> [u8; BLOCK_BYTES / 2] {
     let mut output = [0u8; BLOCK_BYTES / 2];
