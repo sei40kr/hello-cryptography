@@ -2,6 +2,16 @@ const BLOCK_SIZE: usize = 64;
 
 const BLOCK_BYTES: usize = BLOCK_SIZE / 8;
 
+fn xor(left: &[u8; BLOCK_BYTES / 2], right: &[u8; BLOCK_BYTES / 2]) -> [u8; BLOCK_BYTES / 2] {
+    let mut output = [0u8; BLOCK_BYTES / 2];
+
+    for i in 0..BLOCK_BYTES / 2 {
+        output[i] = left[i] ^ right[i];
+    }
+
+    output
+}
+
 pub fn feistel_round<F>(
     left: &[u8; BLOCK_BYTES / 2],
     right: &[u8; BLOCK_BYTES / 2],
@@ -11,16 +21,7 @@ pub fn feistel_round<F>(
 where
     F: Fn(&[u8; BLOCK_BYTES / 2], &[u8; BLOCK_BYTES / 2]) -> [u8; BLOCK_BYTES / 2],
 {
-    let mut new_left = [0u8; BLOCK_BYTES / 2];
-    new_left.copy_from_slice(left);
-
-    let round_output = round_func(right, key);
-
-    for (i, byte) in round_output.into_iter().enumerate() {
-        new_left[i] ^= byte;
-    }
-
-    new_left
+    xor(left, &round_func(right, key))
 }
 
 pub fn feistel_encrypt<F>(
