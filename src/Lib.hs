@@ -1,7 +1,13 @@
-module Lib (cbcDecrypt, cbcEncrypt, cfbDecrypt, cfbEncrypt, ecbDecrypt, ecbEncrypt, feistelDecrypt, feistelEncrypt, ofbDecrypt, ofbEncrypt) where
+module Lib (cbcDecrypt, cbcEncrypt, cfbDecrypt, cfbEncrypt, chunksOf, ecbDecrypt, ecbEncrypt, feistelDecrypt, feistelEncrypt, ofbDecrypt, ofbEncrypt) where
 
 import Data.Bits (xor)
 import Data.Char (chr, ord)
+
+chunksOf :: Int -> String -> [String]
+chunksOf _ [] = []
+chunksOf n str
+  | length str <= n = [str ++ replicate (n - length str) '\0']
+  | otherwise = take n str : chunksOf n (drop n str)
 
 xorStrings :: String -> String -> String
 xorStrings [] [] = []

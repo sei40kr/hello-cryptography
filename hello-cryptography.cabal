@@ -100,4 +100,5 @@ test-suite hello-cryptography-test
     -- Test dependencies.
     build-depends:
         base ^>=4.17.2.0,
+        hspec ^>= 2.11.7,
         hello-cryptography
