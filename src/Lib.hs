@@ -1,4 +1,4 @@
-module Lib (cbcDecrypt, cbcEncrypt, ecbDecrypt, ecbEncrypt, feistelDecrypt, feistelEncrypt) where
+module Lib (cbcDecrypt, cbcEncrypt, cfbDecrypt, cfbEncrypt, ecbDecrypt, ecbEncrypt, feistelDecrypt, feistelEncrypt) where
 
 import Data.Bits (xor)
 import Data.Char (chr, ord)
@@ -38,3 +38,15 @@ cbcDecrypt _ _ _ [] = []
 cbcDecrypt keys roundFn iv (block : blocks) = decryptedBlock ++ cbcDecrypt keys roundFn block blocks
   where
     decryptedBlock = feistelDecrypt keys roundFn $ xorStrings iv block
+
+cfbEncrypt :: [String] -> (String -> String -> String) -> String -> [String] -> String
+cfbEncrypt _ _ _ [] = []
+cfbEncrypt keys roundFn iv (block : blocks) = encryptedBlock ++ cfbEncrypt keys roundFn encryptedBlock blocks
+  where
+    encryptedBlock = xorStrings block $ feistelEncrypt keys roundFn iv
+
+cfbDecrypt :: [String] -> (String -> String -> String) -> String -> [String] -> String
+cfbDecrypt _ _ _ [] = []
+cfbDecrypt keys roundFn iv (block : blocks) = decryptedBlock ++ cfbDecrypt keys roundFn block blocks
+  where
+    decryptedBlock = xorStrings block $ feistelEncrypt keys roundFn iv
