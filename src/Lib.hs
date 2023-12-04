@@ -1,4 +1,4 @@
-module Lib (feistelEncrypt, feistelDecrypt) where
+module Lib (ecbDecrypt, ecbEncrypt, feistelDecrypt, feistelEncrypt) where
 
 import Data.Bits (xor)
 import Data.Char (chr, ord)
@@ -20,3 +20,9 @@ feistelEncrypt keys roundFn block = right' ++ left'
 -- Decrypt a block using the given keys and round function.
 feistelDecrypt :: [String] -> (String -> String -> String) -> String -> String
 feistelDecrypt keys = feistelEncrypt (reverse keys)
+
+ecbEncrypt :: [String] -> (String -> String -> String) -> [String] -> String
+ecbEncrypt keys roundFn = concatMap $ feistelEncrypt keys roundFn
+
+ecbDecrypt :: [String] -> (String -> String -> String) -> [String] -> String
+ecbDecrypt keys roundFn = concatMap $ feistelDecrypt keys roundFn
